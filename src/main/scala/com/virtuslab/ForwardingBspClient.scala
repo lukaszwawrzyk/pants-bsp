@@ -28,9 +28,8 @@ class ForwardingBspClient extends BuildClient {
   override def onBuildTaskFinish(params: TaskFinishParams): Unit =
     target.onBuildTaskFinish(params)
 
-  override def onBuildPublishDiagnostics(
-    params: PublishDiagnosticsParams
-  ): Unit = target.onBuildPublishDiagnostics(params)
+  override def onBuildPublishDiagnostics(params: PublishDiagnosticsParams): Unit =
+    target.onBuildPublishDiagnostics(params)
 
   override def onBuildTargetDidChange(params: DidChangeBuildTarget): Unit =
     target.onBuildTargetDidChange(params)

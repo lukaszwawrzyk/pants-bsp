@@ -1,6 +1,5 @@
 package com.virtuslab
 
-import ch.epfl.scala.bsp4j.BuildClient
 import ch.epfl.scala.bsp4j.DidChangeBuildTarget
 import ch.epfl.scala.bsp4j.LogMessageParams
 import ch.epfl.scala.bsp4j.PublishDiagnosticsParams
@@ -9,9 +8,9 @@ import ch.epfl.scala.bsp4j.TaskFinishParams
 import ch.epfl.scala.bsp4j.TaskProgressParams
 import ch.epfl.scala.bsp4j.TaskStartParams
 
-class ForwardingBspClient extends BuildClient {
+class ForwardingBspClient extends BspClient {
 
-  var target: BuildClient = _
+  var target: BspClient = _
 
   override def onBuildShowMessage(params: ShowMessageParams): Unit =
     target.onBuildShowMessage(params)

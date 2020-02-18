@@ -1,18 +1,9 @@
 package com.virtuslab
 
-import java.nio.file.Path
-
 object Bloop {
-  private val bloopCmd = Seq(
-    "coursier",
-    "launch",
-    "ch.epfl.scala:bloop-launcher-core_2.12:1.4.0-RC1",
-    "--",
-    "1.4.0-RC1"
-  )
-
-  def startBloopServer(home: Path): BspCommunication[BspServer, ForwardingBspClient] = {
-    val pb = new ProcessBuilder(bloopCmd: _*).start()
+  def startBloopServer(options: Options): BspCommunication[BspServer, ForwardingBspClient] = {
+    val command = createCommand(options.bloopVersion)
+    val pb = new ProcessBuilder(command: _*).start()
 
     val client = new ForwardingBspClient
 
@@ -21,7 +12,15 @@ object Bloop {
         localService = client,
         input = pb.getInputStream,
         output = pb.getOutputStream,
-        traceLog = home.resolve("bloop-trace-log.txt")
+        traceLog = options.home.resolve("bloop-trace-log.txt")
       )
   }
+
+  private def createCommand(version: String) = Seq(
+    "coursier",
+    "launch",
+    s"ch.epfl.scala:bloop-launcher-core_2.12:$version",
+    "--",
+    version
+  )
 }

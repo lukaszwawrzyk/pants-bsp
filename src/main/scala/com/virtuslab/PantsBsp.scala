@@ -1,25 +1,19 @@
 package com.virtuslab
 
-import java.io.InputStream
-import java.io.OutputStream
-import java.nio.file.Path
-
 object PantsBsp {
 
   def startPantsServer(
-      stdin: InputStream,
-      stdout: OutputStream,
-      home: Path,
+      logger: Logger,
       options: Options
   ): BspCommunication[BspClient, ForwardingBspServer] = {
-    val server = new PantsBspServer(options)
+    val server = new PantsBspServer(options, logger)
 
     BspCommunication
       .prepare[BspClient, ForwardingBspServer](
         localService = server,
-        input = stdin,
-        output = stdout,
-        traceLog = home.resolve("pants-bsp-trace-log.txt")
+        input = System.in,
+        output = System.out,
+        traceLog = options.home.resolve("pants-bsp-trace-log.txt")
       )
   }
 }

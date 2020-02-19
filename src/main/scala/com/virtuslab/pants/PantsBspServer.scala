@@ -1,8 +1,13 @@
-package com.virtuslab
+package com.virtuslab.pants
+
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 
 import ch.epfl.scala.bsp4j.WorkspaceBuildTargetsResult
+import com.virtuslab.pants.bsp.ForwardingBspServer
+import com.virtuslab.pants.cli.Options
+import com.virtuslab.pants.log.Logger
+import com.virtuslab.pants.log.RedirectingLogger
 
 import scala.sys.process.Process
 
@@ -12,7 +17,7 @@ class PantsBspServer(options: Options, logger: Logger) extends ForwardingBspServ
     logger.log(s"Refreshing pants targets ${options.targets.mkString("[", ", ", "]")} in ${options.workspace}")
 
     val bloopPants = Seq(
-      "coursier",
+      options.coursier.toAbsolutePath.toString,
       "launch",
       "org.scalameta:metals_2.12:0.8.0+66-2c63fb7c-SNAPSHOT",
       "-r",

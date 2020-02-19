@@ -1,4 +1,4 @@
-package com.virtuslab
+package com.virtuslab.pants.bsp
 
 import ch.epfl.scala.bsp4j.BuildClient
 import ch.epfl.scala.bsp4j.BuildServer

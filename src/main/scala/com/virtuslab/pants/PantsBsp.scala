@@ -1,4 +1,10 @@
-package com.virtuslab
+package com.virtuslab.pants
+
+import com.virtuslab.pants.bsp.BspClient
+import com.virtuslab.pants.bsp.BspCommunication
+import com.virtuslab.pants.bsp.ForwardingBspServer
+import com.virtuslab.pants.cli.Options
+import com.virtuslab.pants.log.Logger
 
 object PantsBsp {
 

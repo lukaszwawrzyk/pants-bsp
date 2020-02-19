@@ -1,12 +1,13 @@
-package com.virtuslab
+package com.virtuslab.pants.cli
 
-import java.io.InputStream
-import java.io.OutputStream
 import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption.CREATE
 import java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
 
+import com.virtuslab.pants.Bloop
+import com.virtuslab.pants.PantsBsp
+import com.virtuslab.pants.log.Logger
 import metaconfig.cli.CliApp
 import metaconfig.cli.Command
 import metaconfig.cli.Messages

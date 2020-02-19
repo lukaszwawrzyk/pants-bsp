@@ -1,4 +1,4 @@
-package com.virtuslab
+package com.virtuslab.pants.bsp
 
 import java.io.InputStream
 import java.io.OutputStream

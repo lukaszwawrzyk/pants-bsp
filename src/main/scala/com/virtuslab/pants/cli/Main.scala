@@ -1,13 +1,17 @@
-package com.virtuslab
+package com.virtuslab.pants.cli
+
+import com.virtuslab.pants.BuildInfo
 
 import metaconfig.cli._
 
 object Main {
   private val app = CliApp(
-    version = "0.1",
+    version = BuildInfo.version,
     binaryName = "pants-bsp",
+    out = System.err,
     commands = List(
       ServerCommand,
+      GenerateCommand,
       HelpCommand,
       VersionCommand
     )

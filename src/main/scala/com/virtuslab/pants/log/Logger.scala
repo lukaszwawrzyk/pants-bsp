@@ -1,4 +1,4 @@
-package com.virtuslab
+package com.virtuslab.pants.log
 
 import java.io.PrintStream
 

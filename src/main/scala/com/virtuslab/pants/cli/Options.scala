@@ -1,14 +1,14 @@
-package com.virtuslab
+package com.virtuslab.pants.cli
 
 import java.nio.file.Path
 import java.nio.file.Paths
 
 import metaconfig.Conf
-import metaconfig.Configured
-import metaconfig.generic
+import metaconfig.ConfDecoder
+import metaconfig.ConfEncoder
 import metaconfig.annotation._
+import metaconfig.generic
 import metaconfig.generic.Settings
-import metaconfig.{ConfDecoder, ConfEncoder}
 
 case class Options(
     @Description("List of pants targets to export to bsp")
@@ -27,7 +27,10 @@ case class Options(
     @Description("Pants bsp home directory - for logs.")
     @ExtraName("home")
     home: Path = Paths.get(".pants-bsp")
-)
+) {
+  def bspRoot: Path = output.resolve(".bsp")
+  def coursier: Path = bspRoot.resolve("coursier")
+}
 
 object Options {
   val default: Options = Options()

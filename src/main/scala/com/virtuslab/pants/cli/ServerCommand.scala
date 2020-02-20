@@ -6,6 +6,7 @@ import java.nio.file.StandardOpenOption.CREATE
 import java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
 
 import com.virtuslab.pants.Bloop
+import com.virtuslab.pants.FileWatcher
 import com.virtuslab.pants.PantsBsp
 import com.virtuslab.pants.log.Logger
 import metaconfig.cli.CliApp
@@ -47,16 +48,20 @@ object ServerCommand extends Command[Options]("server") {
 
   private def startServers(options: Options, logger: Logger): Unit = {
     val bloop = Bloop.startBloopServer(options)
-    val pantsBsp = PantsBsp.startPantsServer(logger, options)
+    val pantsBsp = PantsBsp.startPantsServer(options)
     bloop.localService.target = pantsBsp.remoteService
     pantsBsp.localService.target = bloop.remoteService
 
+    FileWatcher.start(options, logger, pantsBsp.remoteService)
+
     val runningBloop = bloop.start()
     val runningPantsBsp = pantsBsp.start()
+
     runningBloop.get()
     runningPantsBsp.get()
     bloop.close()
     pantsBsp.close()
+    FileWatcher.stop()
   }
 
 }

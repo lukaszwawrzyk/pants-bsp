@@ -9,10 +9,9 @@ import com.virtuslab.pants.log.Logger
 object PantsBsp {
 
   def startPantsServer(
-      logger: Logger,
       options: Options
   ): BspCommunication[BspClient, ForwardingBspServer] = {
-    val server = new PantsBspServer(options, logger)
+    val server = new PantsBspServer
 
     BspCommunication
       .prepare[BspClient, ForwardingBspServer](

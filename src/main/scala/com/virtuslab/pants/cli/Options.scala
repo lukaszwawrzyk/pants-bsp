@@ -28,6 +28,7 @@ case class Options(
     @ExtraName("home")
     home: Path = Paths.get(".pants-bsp")
 ) {
+  def bloopDir: Path = output.resolve(".bloop")
   def bspRoot: Path = output.resolve(".bsp")
   def coursier: Path = bspRoot.resolve("coursier")
 }

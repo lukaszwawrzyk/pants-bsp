@@ -1,11 +1,16 @@
 package com.virtuslab.pants
 
 import java.nio.file.Path
+import java.util.UUID
 
 import ch.epfl.scala.bsp4j.BuildTargetEvent
 import ch.epfl.scala.bsp4j.BuildTargetEventKind
 import ch.epfl.scala.bsp4j.BuildTargetIdentifier
 import ch.epfl.scala.bsp4j.DidChangeBuildTarget
+import ch.epfl.scala.bsp4j.StatusCode
+import ch.epfl.scala.bsp4j.TaskFinishParams
+import ch.epfl.scala.bsp4j.TaskId
+import ch.epfl.scala.bsp4j.TaskStartParams
 import com.virtuslab.pants.bsp.BspClient
 import com.virtuslab.pants.cli.Options
 import com.virtuslab.pants.log.Logger
@@ -67,16 +72,34 @@ object FileWatcher {
   }
 
   private def onEvent(path: Path, kind: BuildTargetEventKind): Unit = {
-    bloopRefresh()
-    // TODO compute actual changed targets, current implementation is OK for intellij
-    //  as it doesn't check the content of this event at all
-    val uri = path.toUri.toString
-    val event = new BuildTargetEvent(new BuildTargetIdentifier(uri))
-    event.setKind(kind)
-    client.onBuildTargetDidChange(new DidChangeBuildTarget(Seq(event).asJava))
+    val taskId = new TaskId(UUID.randomUUID().toString)
+    val startParams = new TaskStartParams(taskId)
+    startParams.setEventTime(System.currentTimeMillis())
+    startParams.setMessage("Background import started")
+    client.onBuildTaskStart(startParams)
+    try {
+      bloopRefresh()
+      val finishParams = new TaskFinishParams(taskId, StatusCode.OK)
+      finishParams.setEventTime(System.currentTimeMillis())
+      finishParams.setMessage("Background import done")
+      client.onBuildTaskFinish(finishParams)
+      // TODO compute actual changed targets, current implementation is OK for intellij
+      //  as it doesn't check the content of this event at all
+      val uri = path.toUri.toString
+      val event = new BuildTargetEvent(new BuildTargetIdentifier(uri))
+      event.setKind(kind)
+      client.onBuildTargetDidChange(new DidChangeBuildTarget(Seq(event).asJava))
+    } catch {
+      case e: Exception =>
+        val finishParams = new TaskFinishParams(taskId, StatusCode.ERROR)
+        finishParams.setEventTime(System.currentTimeMillis())
+        finishParams.setMessage("Background import failed")
+        client.onBuildTaskFinish(finishParams)
+    }
   }
 
   private def bloopRefresh(): Unit = {
     new BloopRefresh(options, logger).run()
+    initialized = true
   }
 }
